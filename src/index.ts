@@ -1,8 +1,9 @@
 import * as phantomjs from 'phantomjs-prebuilt';
 import * as process from 'process';
+import * as Jimp from "jimp";
 
 let script = __dirname + '/uploader.js';
-let url = 'https://sib220v.ru/';
+let url = 'https://github.com/';
 
 let getDesktopImage = phantomjs.exec(
     script,
@@ -31,18 +32,18 @@ getMobileImage.stderr.pipe(process.stderr);
 Promise.all([
     new Promise((resolve, reject) => {
         getDesktopImage.on('exit', code => {
-            if(code===0){
+            if (code === 0) {
                 resolve(code);
-            }else{
+            } else {
                 reject(code);
             }
         })
     }),
     new Promise((resolve, reject) => {
         getTabletImage.on('exit', code => {
-            if(code===0){
+            if (code === 0) {
                 resolve(code);
-            }else{
+            } else {
                 reject(code);
             }
         });
@@ -50,13 +51,33 @@ Promise.all([
     }),
     new Promise((resolve, reject) => {
         getMobileImage.on('exit', code => {
-            if(code===0){
+            if (code === 0) {
                 resolve(code);
-            }else{
+            } else {
                 reject(code);
             }
         });
     })
 ]).then(result => {
-    console.log(result);
+    new Jimp(1000, 800, (err, image) => {
+        Promise.all([
+            Jimp.read("./tmp/desktop.png"),
+            Jimp.read("./tmp/mobile.png"),
+            Jimp.read("./assets/template.png"),
+        ]).then(images => {
+            images.push(image)
+            console.log(images);
+            let desctopImage = images[0];
+            let mobileImage = images[1];
+            let templateImage = images[2];
+            desctopImage.resize(903,507);
+            mobileImage.resize(236,418);
+            image
+                .blit(desctopImage, 49, 49)
+                .blit(mobileImage, 674, 225)
+                .composite(templateImage, 0, 0)
+                .write('./tmp/result.png');
+        })
+    });
+
 });
