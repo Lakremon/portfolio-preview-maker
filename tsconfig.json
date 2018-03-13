@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "dist",
+    "sourceMap": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "noImplicitAny": false,
+    "suppressImplicitAnyIndexErrors": true
+  },
+  "compileOnSave": true,
+  "exclude": [
+    "node_modules",
+    "node_modules/@types",
+    "typings",
+    "data",
+    "dump",
+    "files-CGUs",
+    "gulp",
+    "log",
+    "static"
+  ]
+}
