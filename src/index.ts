@@ -58,5 +58,5 @@ Promise.all([
         });
     })
 ]).then(result => {
-    console.log(result);123
+    console.log(result);
 });
