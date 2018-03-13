@@ -1,34 +1,62 @@
-import * as path from 'path';
-// import * as childProcess from 'child_process';
 import * as phantomjs from 'phantomjs-prebuilt';
 import * as process from 'process';
 
-var program = phantomjs.exec(
-    __dirname + '/uploader.js',
-    'https://sib220v.ru/',
-    './assets/desktop.png',
+let script = __dirname + '/uploader.js';
+let url = 'https://sib220v.ru/';
+
+let getDesktopImage = phantomjs.exec(
+    script,
+    url,
+    './tmp/desktop.png',
     '1920x1080'
 );
-program.stdout.pipe(process.stdout);
-program.stderr.pipe(process.stderr);
-let getAllImages = new Promise();
-const desktopImage = program.on('exit');
+let getTabletImage = phantomjs.exec(
+    script,
+    url,
+    './tmp/tablet.png',
+    '1366x1024'
+);
+let getMobileImage = phantomjs.exec(
+    script,
+    url,
+    './tmp/mobile.png',
+    '320x568'
+);
+getDesktopImage.stdout.pipe(process.stdout);
+getDesktopImage.stderr.pipe(process.stderr);
+getTabletImage.stdout.pipe(process.stdout);
+getTabletImage.stderr.pipe(process.stderr);
+getMobileImage.stdout.pipe(process.stdout);
+getMobileImage.stderr.pipe(process.stderr);
+Promise.all([
+    new Promise((resolve, reject) => {
+        getDesktopImage.on('exit', code => {
+            if(code===0){
+                resolve(code);
+            }else{
+                reject(code);
+            }
+        })
+    }),
+    new Promise((resolve, reject) => {
+        getTabletImage.on('exit', code => {
+            if(code===0){
+                resolve(code);
+            }else{
+                reject(code);
+            }
+        });
 
-getAllImages.all([desktopImage]);
-getAllImages.then(function (){
-
+    }),
+    new Promise((resolve, reject) => {
+        getMobileImage.on('exit', code => {
+            if(code===0){
+                resolve(code);
+            }else{
+                reject(code);
+            }
+        });
+    })
+]).then(result => {
+    console.log(result);
 });
-
-// const binPath = phantomjs.path;
-// let t = Date.now();
-// phantomjs.open('https://sib220v.ru/', function (status) {
-//     console.log(status);
-//     if (status !== 'success') {
-//         console.log('FAIL to load the address');
-//     } else {
-//         t = Date.now() - t;
-//         console.log('Loading ' + system.args[1]);
-//         console.log('Loading time ' + t + ' msec');
-//     }
-//     phantomjs.exit();
-// });
