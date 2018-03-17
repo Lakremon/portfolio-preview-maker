@@ -1,6 +1,7 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as compression from 'compression';
+import {Maker} from "./maker";
 
 import {APP_PORT} from "../config/env.conf";
 
@@ -14,7 +15,7 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 }));
 
 // Register routes
-app.use('/make-file', maker);
+app.use('/make-file', Maker.run);
 
 app.get('*', function (request, response) {
     response.sendFile(__dirname + '../static/index.html');
