@@ -3,3 +3,4 @@ node_modules
 .idea
 tmp
 src/config/env.conf.ts
+static/*-result.png
