@@ -2,4 +2,4 @@ dist
 node_modules
 .idea
 tmp
-config/env.conf.ts
+src/config/env.conf.ts
