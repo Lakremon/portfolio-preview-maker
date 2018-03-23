@@ -63,7 +63,7 @@ export class Maker {
                 });
             })
         ]).then(result => {
-            new Jimp(1000, 800, (err, image) => {
+            new Jimp(1000, 800, 0x00000000, (err, image) => {
                 Promise.all([
                     Jimp.read('./tmp/' + hash + '-desktop.png'),
                     Jimp.read('./tmp/' + hash + '-mobile.png'),
