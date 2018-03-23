@@ -69,8 +69,7 @@ export class Maker {
                     Jimp.read('./tmp/' + hash + '-mobile.png'),
                     Jimp.read('./assets/template.png'),
                 ]).then(images => {
-                    images.push(image)
-                    console.log(images);
+                    images.push(image);
                     let desctopImage = images[0];
                     let mobileImage = images[1];
                     let templateImage = images[2];
