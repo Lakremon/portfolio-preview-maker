@@ -1,28 +1,30 @@
 import * as phantomjs from 'phantomjs-prebuilt';
 import * as process from 'process';
 import * as Jimp from "jimp";
+import * as crypto from "crypto";
 
 export class Maker {
     static run(req, res) {
         let script = __dirname + '/uploader.js';
-        let url = 'https://github.com/';
+        let url = req.param('url');
+        const hash = crypto.createHash('md5').update(url).digest("hex");
 
         let getDesktopImage = phantomjs.exec(
             script,
             url,
-            './tmp/desktop.png',
+            './tmp/' + hash + '-desktop.png',
             '1920x1080'
         );
         let getTabletImage = phantomjs.exec(
             script,
             url,
-            './tmp/tablet.png',
+            './tmp/' + hash + '-tablet.png',
             '1366x1024'
         );
         let getMobileImage = phantomjs.exec(
             script,
             url,
-            './tmp/mobile.png',
+            './tmp/' + hash + '-mobile.png',
             '320x568'
         );
         getDesktopImage.stdout.pipe(process.stdout);
@@ -63,9 +65,9 @@ export class Maker {
         ]).then(result => {
             new Jimp(1000, 800, (err, image) => {
                 Promise.all([
-                    Jimp.read("./tmp/desktop.png"),
-                    Jimp.read("./tmp/mobile.png"),
-                    Jimp.read("./assets/template.png"),
+                    Jimp.read('./tmp/' + hash + '-desktop.png'),
+                    Jimp.read('./tmp/' + hash + '-mobile.png'),
+                    Jimp.read('./assets/template.png'),
                 ]).then(images => {
                     images.push(image)
                     console.log(images);
@@ -78,7 +80,9 @@ export class Maker {
                         .blit(desctopImage, 49, 49)
                         .blit(mobileImage, 674, 225)
                         .composite(templateImage, 0, 0)
-                        .write('./tmp/result.png');
+                        .write('./static/' + hash + '-result.png',()=>{
+                            res.redirect(303, '/' + hash + '-result.png');
+                        });
                 })
             });
         });

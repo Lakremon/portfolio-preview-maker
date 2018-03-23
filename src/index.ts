@@ -8,7 +8,7 @@ import {APP_PORT} from "./config/env.conf";
 
 let app = express();
 
-app.use('/', express.static(__dirname + '../static'));
+app.use('/', express.static(__dirname + '/../static'));
 app.use(bodyParser({limit: '500mb'}));
 app.use(compression());
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
